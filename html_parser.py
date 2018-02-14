@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import re
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup as bs
 from urllib.parse import urljoin
 
 class HtmlParser(object):
@@ -10,9 +10,9 @@ class HtmlParser(object):
 	re_get_num_pattern = '<span class="video-number">([\s\S]*?)</span>'
 
 	def parser(self,html_cont,url):
-		re_pattern = '<div class="video-info">([\w\W]*?)</div>'
-		root_html = re.findall(re_pattern,html_cont)
-		return root_html
+		soup = bs(html_cont,"html.parser")
+		items = soup.find_all('div',attrs={'class':'video-info'})
+		return items
 
 	def __refine_num(num):
 		if '万' in num:
@@ -28,11 +28,11 @@ class HtmlParser(object):
 	def __sorted_seed(author):
 		return HtmlParser.__refine_num(author['num'])
 
-	def get_name_num(self,root_html):
-		for l in root_html:
-			name = re.findall(HtmlParser.re_get_name_pattern,l)[0]
-			num = re.findall(HtmlParser.re_get_num_pattern,l)[0]
-
+	def get_name_num(self,items):
+		for i in items:
+			name = i.find('span',attrs={'class':'video-nickname'}).get('title')
+			num = i.find('span',attrs={'class':'video-number'}).get_text()
 			author = {'name':name,'num':num}
 			HtmlParser.authors.append(author)
+		
 		return HtmlParser.authors
