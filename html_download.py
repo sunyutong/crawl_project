@@ -5,7 +5,7 @@ class HtmlDownloader(object):
 	
 	def download(self,url):
 		if url is None:
-			return
+			return None
 		else:
 			response = urllib.request.urlopen(url)
 			if response.getcode() != 200:

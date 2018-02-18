@@ -1,4 +1,4 @@
-import html_download,html_parser,outputer
+import html_download, html_parser, outputer
 
 class Spider(object):
 
